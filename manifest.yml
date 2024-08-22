@@ -1,0 +1,9 @@
+applications:
+  - name: Myapp
+    memory: 512M
+    instances: 1
+    docker:
+      image: mariamyam/myapp-image:latest
+    env:
+      PORT: 3000
+
