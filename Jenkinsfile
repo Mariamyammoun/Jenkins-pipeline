@@ -1,3 +1,7 @@
+def COLOR_MAP = [
+    'SUCCESS': 'good', 
+    'FAILURE': 'danger',
+]
 pipeline {
     agent any
 
@@ -28,11 +32,13 @@ pipeline {
                 sh 'mvn clean install -DskipTests'
             }
         }
+
         stage('Test') {
             steps {
                 sh 'mvn test'
             }
         }
+
         stage('Checkstyle Analysis') {
             steps {
                 sh 'mvn checkstyle:checkstyle'
@@ -40,16 +46,20 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'sonar6.1'
+            }
             steps {
-                script {
-                    withSonarQubeEnv('SonarQube') {
-                        sh "sonar-scanner 
-                        -Dsonar.projectKey=Myapp 
-                        -Dsonar.projectName=Myapp 
-                        -Dsonar.projectVersion=1.0 
-                        -Dsonar.sources=src 
-                        -Dsonar.host.url=${SONARQUBE_URL} 
-                        -Dsonar.login=${SONARQUBE_TOKEN}"
+                    withSonarQubeEnv('sonar') {
+                        sh """
+                        sonar-scanner \
+                            -Dsonar.projectKey=Myapp \
+                            -Dsonar.projectName=Myapp \
+                            -Dsonar.projectVersion=1.0 \
+                            -Dsonar.sources=src \
+                            -Dsonar.host.url=${SONARQUBE_URL} \
+                            -Dsonar.login=${SONARQUBE_TOKEN}
+                        """
                     }
                 }
             }
@@ -85,18 +95,19 @@ pipeline {
             steps {
                 script {
                     sh 'cf login -a https://api.cf.us10-001.hana.ondemand.com -u mariamyammoun@gmail.com -p Mariam1234$'
-                    sh "cf push ${CF_APP_NAME} -o ${DOCKER_REPO}/myapp-image:latest -p . -b docker"
+                    sh "cf push ${CF_APP_NAME} --docker-image ${DOCKER_REPO}/myapp-image:latest"
                 }
             }
         }
     }
 
     post {
-        success {
-            echo 'Pipeline succeeded.'
-        }
-        failure {
-            echo 'Pipeline failed.'
+       always {
+            echo 'Slack Notifications.'
+            slackSend channel: '#jenkinscicd',
+                color: COLOR_MAP[currentBuild.currentResult],
+                message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
         }
     }
 }
+
