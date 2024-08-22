@@ -22,5 +22,11 @@ pipeline {
             }
 
         }
+
+        stage('Checkstyle Analysis'){
+            steps {
+                sh 'npm checkstyle:checkstyle'
+            }
+        }
     }
 }
