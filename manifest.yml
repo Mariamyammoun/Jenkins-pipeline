@@ -5,5 +5,5 @@ applications:
     docker:
       image: mariamyam/myapp-image:latest
     routes:
-      - route: myapp.cfapps.us10-001.hana.ondemand.com
+      - route: https://Myapp.cfapps.us10-001.hana.ondemand.com
 
