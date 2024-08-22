@@ -11,6 +11,11 @@ pipeline {
         CF_APP_PORT = '3000'
     }
 
+    tools {
+        maven "MAVEN3"
+        jdk "OracleJDK17"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -18,12 +23,19 @@ pipeline {
             }
         }
 
-        stage('Build and Test') {
+        stage('Build') {
             steps {
-                script {
-                    sh 'npm install'
-                    sh 'npm test'
-                }
+                sh 'mvn clean install -DskipTests'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage('Checkstyle Analysis') {
+            steps {
+                sh 'mvn checkstyle:checkstyle'
             }
         }
 
@@ -31,7 +43,13 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('SonarQube') {
-                        sh "sonar-scanner -Dsonar.projectKey=Myapp -Dsonar.projectName=Myapp -Dsonar.projectVersion=1.0 -Dsonar.sources=src -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.login=${SONARQUBE_TOKEN}"
+                        sh "sonar-scanner 
+                        -Dsonar.projectKey=Myapp 
+                        -Dsonar.projectName=Myapp 
+                        -Dsonar.projectVersion=1.0 
+                        -Dsonar.sources=src 
+                        -Dsonar.host.url=${SONARQUBE_URL} 
+                        -Dsonar.login=${SONARQUBE_TOKEN}"
                     }
                 }
             }
