@@ -53,7 +53,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("${DOCKER_REPO}/myapp:latest")
+                    dockerImage = docker.build("${DOCKER_HUB_REPO}/myapp:latest")
                 }
             }
         }
