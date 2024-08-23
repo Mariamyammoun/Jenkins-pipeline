@@ -5,6 +5,8 @@ def COLOR_MAP = [
 pipeline {
     agent any
     environment {
+        DOCKER_HUB_CREDENTIALS = 'jenkins-dockerhub' 
+        DOCKER_HUB_REPO = 'mariamyam/myapp' 
         SONARQUBE_URL = 'http://localhost:9000'
     }
     tools {
@@ -46,6 +48,25 @@ pipeline {
             }   
               
           }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${DOCKER_HUB_REPO}:$BUILD_NUMBER", "./Docker-files/app/multistage/")
+                }
+            }
+        }
+
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
+                        dockerImage.push("$BUILD_NUMBER")
+                        dockerImage.push('latest')
+                    }
+                }
+            }
         }
 
         
