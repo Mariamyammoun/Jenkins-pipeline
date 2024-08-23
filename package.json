@@ -4,15 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha Tests"
+    "test": "mocha Tests",
+    "lint": "eslint '**/*.js'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "winston": "^3.14.2"
   },
   "devDependencies": {
+    "eslint": "^9.9.0",
     "mocha": "^10.7.3"
   }
 }
