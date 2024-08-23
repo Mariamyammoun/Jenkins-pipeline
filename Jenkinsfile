@@ -39,15 +39,7 @@ pipeline {
             steps {
                withSonarQubeEnv('sonar') {
 
-                        sh """
-                        sonar-scanner \
-                            -Dsonar.projectKey=Myapp \
-                            -Dsonar.projectName=Myapp \
-                            -Dsonar.projectVersion=1.0 \
-                            -Dsonar.sources=src \
-                            -Dsonar.host.url=${SONARQUBE_URL} \
-                            -Dsonar.login=${SONARQUBE_TOKEN}
-                        """
+                        sh 'sonar-scanner -Dsonar.projectKey=Myapp -Dsonar.projectName=Myapp -Dsonar.projectVersion=1.0 -Dsonar.sources=src -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.login=${SONARQUBE_TOKEN}'
                     }
                 }
             }
