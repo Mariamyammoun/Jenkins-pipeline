@@ -6,6 +6,7 @@ pipeline {
     }
     tools {
 	    nodejs "nodejs18.19"
+            sonar-scanner "sonar-scanner"
 	}
 
     stages{
@@ -32,16 +33,22 @@ pipeline {
             }
         }
 
-        stage('Sonar Analysis') {
+        stage('SonarQube Analysis') {
             environment {
-                scannerHome = tool 'sonar6.1'
+                scannerHome = tool 'sonar-scanner'
             }
             steps {
-               withSonarQubeEnv('sonar') {
-
-                        sh 'sonar-scanner -Dsonar.projectKey=Myapp -Dsonar.projectName=Myapp -Dsonar.projectVersion=1.0 -Dsonar.sources=src -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.login=${SONARQUBE_TOKEN}'
-                    }
-                }
+                sh '''
+                    ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectKey=Myapp \
+                        -Dsonar.projectName=Myapp \
+                        -Dsonar.projectVersion=1.0 \
+                        -Dsonar.sources=src \
+                        -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                        -Dsonar.eslint.reportPaths=eslint-report.json
+                '''
             }
+        }
+           
     }
 }
