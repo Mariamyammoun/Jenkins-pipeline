@@ -58,13 +58,13 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image to Docker Hub') {
+        
+
+        stage('Push to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
-                        dockerImage.push("$BUILD_NUMBER")
-                        dockerImage.push('latest')
-                    }
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+                        docker.image("${DOCKER_HUB_REPO}/myapp:latest").push('latest')
                 }
             }
         }
