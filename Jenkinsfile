@@ -37,15 +37,16 @@ pipeline {
                 scannerHome = tool 'sonar-scanner'
             }
             steps {
-                sh '''
-                    ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.projectKey=Myapp \
-                        -Dsonar.projectName=Myapp \
-                        -Dsonar.projectVersion=1.0 \
-                        -Dsonar.sources=src \
-                        -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-                        -Dsonar.eslint.reportPaths=eslint-report.json
-                '''
+                   sh '''
+            ${scannerHome}/bin/sonar-scanner \
+                -Dsonar.projectKey=Myapp \
+                -Dsonar.projectName=Myapp \
+                -Dsonar.projectVersion=1.0 \
+                -Dsonar.sources=Myapp \
+                -Dsonar.javascript.lcov.reportPaths=Myapp/coverage/lcov.info \
+                -Dsonar.eslint.reportPaths=Myapp/eslint-report.json \
+                -Dsonar.projectBaseDir=Myapp
+        '''
             }
         }
            
