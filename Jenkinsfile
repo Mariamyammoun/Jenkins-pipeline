@@ -6,8 +6,7 @@ pipeline {
     }
     tools {
 	    nodejs "nodejs18.19"
-            sonar-scanner "sonar-scanner"
-	}
+    }
 
     stages{
         stage('Fetch code') {
