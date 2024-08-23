@@ -1,8 +1,7 @@
 pipeline {
     agent any
     tools {
-	    maven "MAVEN3"
-	    jdk "OracleJDK17"
+	    nodejs "node18.19"
 	}
 
     stages{
@@ -25,7 +24,7 @@ pipeline {
 
         stage('Checkstyle Analysis'){
             steps {
-                sh 'npm checkstyle:checkstyle'
+                sh 'npm run lint'
             }
         }
     }
