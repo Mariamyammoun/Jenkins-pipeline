@@ -31,27 +31,17 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            environment {
+        
+        stage('SonarQube analysis') {
+          steps {
+            script {
                 scannerHome = tool 'sonar-scanner'
             }
-            steps {
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh '''
-                    /var/lib/jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
-                    -Dsonar.projectKey=Myapp \
-                    -Dsonar.projectName=Myapp \
-                    -Dsonar.projectVersion=1.0 \
-                    -Dsonar.sources=Myapp \
-                    -Dsonar.javascript.lcov.reportPaths=Myapp/coverage/lcov.info \
-                    -Dsonar.eslint.reportPaths=Myapp/eslint-report.json \
-                    -Dsonar.projectBaseDir=Myapp \
-                    -Dsonar.login=${SONAR_TOKEN}
-                    '''
-                }   
+            withSonarQubeEnv('sonar') {
+               sh "${scannerHome}/bin/sonar-scanner"
+            }   
               
-            }
+          }
         }
-           
     }
 }
