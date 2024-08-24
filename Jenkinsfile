@@ -5,6 +5,11 @@ def COLOR_MAP = [
 pipeline {
     agent any
     environment {
+        CF_CREDENTIALS_ID = 'jenkins-cf'
+        CF_API = 'https://api.cf.us10-001.hana.ondemand.com'
+        CF_ORG = '493b7923trial_493b7923trial'
+        CF_SPACE = 'my-new-espace'
+        APP_NAME = 'Myapp'
         DOCKER_HUB_CREDENTIALS = 'jenkins-dockerhub' 
         DOCKER_HUB_REPO = 'mariamyam/myapp' 
         SONARQUBE_URL = 'http://localhost:9000'
@@ -65,6 +70,23 @@ pipeline {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_HUB_CREDENTIALS}") {
                         dockerImage.push('latest')
+                    }
+                }
+            }
+        }
+
+        
+
+        stage('Deploy to Cloud Foundry') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: "${CF_CREDENTIALS_ID}", usernameVariable: 'CF_USERNAME', passwordVariable: 'CF_PASSWORD')]) {
+                        sh """
+                            cf api ${CF_API}
+                            cf auth ${CF_USERNAME} ${CF_PASSWORD}
+                            cf target -o ${CF_ORG} -s ${CF_SPACE}
+                            cf push ${APP_NAME} --docker-image ${DOCKER_HUB_REPO}:latest --docker-username ${CF_USERNAME} --docker-password ${CF_PASSWORD}
+                        """
                     }
                 }
             }
