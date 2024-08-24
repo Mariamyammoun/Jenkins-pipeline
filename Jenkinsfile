@@ -82,10 +82,12 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: "${CF_CREDENTIALS_ID}", usernameVariable: 'CF_USERNAME', passwordVariable: 'CF_PASSWORD')]) {
                         sh """
+                            
+                            export CF_DOCKER_PASSWORD=${CF_PASSWORD}
                             cf api ${CF_API}
                             cf auth ${CF_USERNAME} ${CF_PASSWORD}
                             cf target -o ${CF_ORG} -s ${CF_SPACE}
-                            cf push ${APP_NAME} --docker-image ${DOCKER_HUB_REPO}:latest --docker-username ${CF_USERNAME} --docker-password ${CF_PASSWORD}
+                            cf push ${APP_NAME} --docker-image ${DOCKER_HUB_REPO}:latest --docker-username ${CF_USERNAME}
                         """
                     }
                 }
