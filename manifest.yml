@@ -3,7 +3,7 @@ applications:
     memory: 512M
     instances: 1
     docker:
-      image: mariamyam/myapp-image:latest
+      image: mariamyam/myapp:latest
     routes:
       - route: myapp-unique.cfapps.us10-001.hana.ondemand.com
 
