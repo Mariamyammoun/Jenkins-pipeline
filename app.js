@@ -13,7 +13,7 @@ const logger = winston.createLogger({
 });
 
 app.get('/', (req, res) => {
-  res.send('Hello World this is my app js !');
+  res.send('Hello, world! This is My JS app');
 });
 
 app.listen(port, () => {
